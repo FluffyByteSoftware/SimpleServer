@@ -44,7 +44,7 @@ namespace SimpleServer.Core.Networking
             if (Status != ServiceState.Running)
                 Scribe.Warn("[Sentinel] Restart requested but was not running.");
 
-            Scribe.Write("[Sentinel] Restart requested...");
+            Scribe.Debug("[Sentinel] Restart requested...");
 
             await RequestStop();
             await Task.Delay(500);
@@ -83,7 +83,7 @@ namespace SimpleServer.Core.Networking
 
                     _connectedClients.TryAdd(sClient, DateTime.Now);
 
-                    Scribe.Write($"[Sentinel] New client connected: {sClient.Name}");
+                    Scribe.Debug($"[Sentinel] New client connected: {sClient.Name}");
                     
                     _heartbeat.Subscribe(sClient);
                     
@@ -139,7 +139,7 @@ namespace SimpleServer.Core.Networking
         {
             if (_connectedClients.TryRemove(client, out _))
             {
-                Scribe.Warn($"[Sentinel] Client disconnected: {client.Name} and removed.");
+                Scribe.Debug($"[Sentinel] Client disconnected: {client.Name} and removed.");
                 _heartbeat.Unsubscribe(client);
             }
         }

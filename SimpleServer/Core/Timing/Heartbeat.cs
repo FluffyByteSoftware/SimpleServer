@@ -27,11 +27,11 @@ namespace SimpleServer.Core.Timing
         {
             if (Status != ServiceState.Stopped && Status != ServiceState.Failure)
             {
-                Scribe.Warn($"[Heartbeat] Cannot start while in state: {Status}.");
+                Scribe.Debug($"[Heartbeat] Cannot start while in state: {Status}.");
                 return Task.CompletedTask;
             }
 
-            Scribe.Write("[Heartbeat] Starting...");
+            Scribe.Debug("[Heartbeat] Starting...");
 
             ResetCancellation();
             Status = ServiceState.Starting;
@@ -44,7 +44,7 @@ namespace SimpleServer.Core.Timing
 
         public async Task RequestRestart()
         {
-            Scribe.Write("[Heartbeat] Restart requested...");
+            Scribe.Debug("[Heartbeat] Restart requested...");
 
             await RequestStop();
 

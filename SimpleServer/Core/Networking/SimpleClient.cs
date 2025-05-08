@@ -80,6 +80,13 @@ namespace SimpleServer.Core.Networking
             }
             finally
             {
+                PlayerEntity? pe = PlayerManager.TryGetPlayer(UserName);
+
+                if(pe != null)
+                {
+                    await PlayerManager.UnregisterPlayer(pe);
+                }
+
                 _stream.Close();
                 _reader.Close();
                 _writer.Close();
@@ -198,13 +205,17 @@ namespace SimpleServer.Core.Networking
             catch (ObjectDisposedException) { return false; }
         }
 
-        public void ToggleAuthorized(string username)
+        public async Task ToggleAuthorized(string username)
         {
             try
             {
                 UserName = username;
+
+                PlayerEntity newPlayer = new(this);
+
                 Authorized?.Invoke(this);
-                Scribe.Write($"[SimpleClient] {Name} has been authorized.");
+
+                await PlayerManager.RegisterPlayer(newPlayer);
             }
             catch (Exception ex)
             {
@@ -308,15 +319,15 @@ namespace SimpleServer.Core.Networking
         {
             if (!IsAuthorized) return;
 
-            while (_inputBuffer.TryDequeue(out var input))
+            while (_inputBuffer.TryDequeue(out var input))  // <- 1st dequeue
             {
                 PlayerEntity? newPlayer = PlayerManager.TryGetPlayer(Name);
 
-                if(newPlayer != null)
+                if (newPlayer != null)
                 {
                     bool wasCommand = await CommandParser.TryParseAndExecute(newPlayer, input);
-                    
-                    if(!wasCommand)
+
+                    if (!wasCommand)
                     {
                         newPlayer?.WriteLine("I don't recognize that command.");
                     }
@@ -324,10 +335,11 @@ namespace SimpleServer.Core.Networking
                 else
                 {
                     await SendMessage("You're not registered in the game.");
-                    await TryDisconnect();
+                    await TryDisconnect(); // <- this is killing the connection!
                 }
             }
         }
+
 
 
     }

@@ -63,7 +63,7 @@ namespace SimpleServer.Core.Networking
                             Username = "Unknown";
 
                         sClient.SetName(Username);
-                        sClient.ToggleAuthorized(Username);
+                        await sClient.ToggleAuthorized(Username);
 
                         return new(true, false);
                     }

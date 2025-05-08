@@ -1,38 +1,55 @@
 ﻿using System.Collections.Concurrent;
 using SimpleServer.Core.GamePlay;
 using SimpleServer.Core.Networking;
+using FluffyByte.Utilities;
 
 namespace SimpleServer.Core.GamePlay
 {
     internal static class PlayerManager
     {
-        private static readonly ConcurrentDictionary<string, PlayerEntity> _players = new();
-
-        public static bool Register(SimpleClient client)
+        private static readonly FluffyList<PlayerEntity> _players = [];
+        
+        public static async Task RegisterPlayer(PlayerEntity player)
         {
-            if (string.IsNullOrEmpty(client.Name) || _players.ContainsKey(client.Name))
-                return false;
+            if (_players.Contains(player))
+            {
+                Scribe.Warn("I was asked to register a player that's already registered.");
+                return;
+            }
 
-            _players[client.Name] = new PlayerEntity(client);
-            return true;
+            _players.Add(player);
+            
+            await player.WriteLine("You are registered to the PlayerManager.");
+
         }
 
         public static PlayerEntity? TryGetPlayer(string name)
         {
-            foreach(var player in _players.Values)
+            foreach(PlayerEntity player in _players)
             {
                 if (player.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    Scribe.Debug($"Found player {player.Name} in playermanager");
                     return player;
+                }
             }
 
             return null;
         }
 
-        public static bool Remove(string name)
+        public static async Task UnregisterPlayer(PlayerEntity player)
         {
-            return _players.TryRemove(name, out _);
+            if(_players.Contains(player))
+            {
+                await player.WriteLine("Unregistering you from PlayerManager.");
+
+                _players.Remove(player);
+                return;
+            }
+
+            Scribe.Debug("I was unable to find player to remove.");
         }
 
-        public static IEnumerable<PlayerEntity> AllPlayers => _players.Values;
+        public static IEnumerable<PlayerEntity> AllPlayers => _players;
     }
 }

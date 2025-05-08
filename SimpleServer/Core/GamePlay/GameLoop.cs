@@ -60,7 +60,7 @@ namespace SimpleServer.Core.GamePlay
             {
                 var entity = new PlayerEntity(client);
                 _players.TryAdd(client.Name, entity);
-                Scribe.Write($"[GameLoop] Registered player: {client.Name}");
+                Scribe.Debug($"[GameLoop] Registered player: {client.Name}");
             }
 
             return Task.CompletedTask;
@@ -70,7 +70,7 @@ namespace SimpleServer.Core.GamePlay
         {
             if (_players.TryRemove(clientName, out var _))
             {
-                Scribe.Write($"[GameLoop] Unregistered player: {clientName}");
+                Scribe.Debug($"[GameLoop] Unregistered player: {clientName}");
             }
 
             return Task.CompletedTask;

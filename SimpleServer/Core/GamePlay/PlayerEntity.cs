@@ -71,7 +71,9 @@ namespace SimpleServer.Core.GamePlay
         public void SetPosition(int x, int y, int z)
         {
             Position3D = new(x, y, z);
-            Scribe.Write($"[PlayerEntity] {Name} moved to {Position3D}");
+
+            Scribe.Debug($"[PlayerEntity] {Name} moved to {Position3D}");
+            //UpdatePosition();
         }
     }
 }

@@ -10,21 +10,20 @@ namespace SimpleServer.Core
     {
         public static async Task Main(string[] args)
         {
-            if(args.Length > 0)
+            if(args.Contains("--debug"))
             {
-                Scribe.Write("Arguments provided!");
+                DebugFlags.EnableVerboseLogging();
             }
 
-            Scribe.Write("Hello World!");
-
-            Scribe.Write("Starting SimpleServer...");
+            Scribe.Write("Fetching core services...");
             
             Heartbeat heartbeat = new();
             
             GameLoop gLoop = new();
             
             Sentinel sentinel = new(heartbeat, gLoop);
-            
+
+            Scribe.Write("Initial startup completed.");
 
             _ = heartbeat.RequestStart();
             
@@ -32,9 +31,11 @@ namespace SimpleServer.Core
 
             _ = gLoop.RequestStart();
 
+            Scribe.Write("All core services started.");
+
             heartbeat.Subscribe(gLoop);
 
-            Scribe.Write("SimpleServer started!");
+            Scribe.Debug("GameLoop subscribed to Heartbeat.");
 
             Scribe.Write("Press any key to exit...");
             
