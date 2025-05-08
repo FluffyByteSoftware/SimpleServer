@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using FluffyByte.Utilities;
 using SimpleServer.Core.Timing;
-using SimpleServer.Core.Gameplay; // Make sure to include this
+using SimpleServer.Core.GamePlay;
+using SimpleServer.Core.GamePlay.Input;
 
 namespace SimpleServer.Core.Networking
 {
@@ -305,11 +306,29 @@ namespace SimpleServer.Core.Networking
 
         private async Task HandleGameInputTick()
         {
+            if (!IsAuthorized) return;
+
             while (_inputBuffer.TryDequeue(out var input))
             {
-                Scribe.Write($"[SimpleClient] Tick processing: {input}");
-                await SendMessageNoNewline($"[Echo] {input}");
+                PlayerEntity? newPlayer = PlayerManager.TryGetPlayer(Name);
+
+                if(newPlayer != null)
+                {
+                    bool wasCommand = await CommandParser.TryParseAndExecute(newPlayer, input);
+                    
+                    if(!wasCommand)
+                    {
+                        newPlayer?.WriteLine("I don't recognize that command.");
+                    }
+                }
+                else
+                {
+                    await SendMessage("You're not registered in the game.");
+                    await TryDisconnect();
+                }
             }
         }
+
+
     }
 }

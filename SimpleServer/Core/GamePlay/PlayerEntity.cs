@@ -14,16 +14,16 @@ namespace SimpleServer.Core.GamePlay
         private readonly SimpleClient _client = client;
         public string Name => _client.Name;
 
-        
+        public Vector3 Position3D { get; private set; } = new(0, 0, 0);
 
         public async Task SendUpdateAsync(string message)
         {
             await _client.SendMessage(message);
         }
 
-        public async Task Tick()
+        public Task Tick()
         {
-            await _client.SendMessage("Test");
+            return Task.CompletedTask;
         }
 
         public async Task Write(string message)
@@ -66,6 +66,12 @@ namespace SimpleServer.Core.GamePlay
             }
 
             return string.Empty;
+        }
+
+        public void SetPosition(int x, int y, int z)
+        {
+            Position3D = new(x, y, z);
+            Scribe.Write($"[PlayerEntity] {Name} moved to {Position3D}");
         }
     }
 }

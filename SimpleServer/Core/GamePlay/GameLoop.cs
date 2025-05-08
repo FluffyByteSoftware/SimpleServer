@@ -7,7 +7,7 @@ using SimpleServer.Core.GamePlay;
 using SimpleServer.Core.Networking;
 using SimpleServer.Core.Timing;
 
-namespace SimpleServer.Core.Gameplay
+namespace SimpleServer.Core.GamePlay
 {
     internal class GameLoop : ICoreService, ITickable
     {

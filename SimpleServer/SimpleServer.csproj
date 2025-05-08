@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Core\GamePlay\Input\Commands\MoveCommand.cs" />
     <None Include="Core\Timing\ITickable.cs" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using FluffyByte.Utilities;
 using SimpleServer.Core.Timing;
-using SimpleServer.Core.Gameplay;
+using SimpleServer.Core.GamePlay;
 
 namespace SimpleServer.Core.Networking
 {

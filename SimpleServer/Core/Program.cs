@@ -2,7 +2,7 @@
 using SimpleServer.Core.Networking;
 using FluffyByte.Utilities;
 using SimpleServer.Core.Timing;
-using SimpleServer.Core.Gameplay;
+using SimpleServer.Core.GamePlay;
 
 namespace SimpleServer.Core
 {
