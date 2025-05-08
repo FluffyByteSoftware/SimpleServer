@@ -7,4 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Core\Timing\ITickable.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FluffyByte.Utilities\FluffyByte.Utilities\FluffyByte.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>
