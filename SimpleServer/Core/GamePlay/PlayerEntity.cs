@@ -4,21 +4,34 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using FluffyByte.SimpleServer.Core.Networking;
 using FluffyByte.Utilities;
 using SimpleServer.Core.Networking;
 
 namespace SimpleServer.Core.GamePlay
 {
-    internal class PlayerEntity(SimpleClient client)
+    internal class PlayerEntity
     {
-        private readonly SimpleClient _client = client;
-        public string Name => _client.Name;
+        public SimpleClient? SClient;
+        public SocketClient? SoClient;
+
+        public string Name => SClient.Name;
 
         public Vector3 Position3D { get; private set; } = new(0, 0, 0);
 
+        public PlayerEntity(SimpleClient client)
+        {
+            SClient = client;
+        }
+
+        public PlayerEntity(SocketClient sClient)
+        {
+            SoClient = sClient;
+        }
+
         public async Task SendUpdateAsync(string message)
         {
-            await _client.SendMessage(message);
+            await SClient.SendMessage(message);
         }
 
         public Task Tick()
@@ -30,7 +43,7 @@ namespace SimpleServer.Core.GamePlay
         {
             try
             {
-                await _client.SendMessageNoNewline(message);
+                await SClient.SendMessageNoNewline(message);
             }
             catch (Exception ex)
             {
@@ -43,7 +56,7 @@ namespace SimpleServer.Core.GamePlay
         {
             try
             {
-                await _client.SendMessage(message);
+                await SClient.SendMessage(message);
             }
             catch (Exception ex)
             {
@@ -56,7 +69,7 @@ namespace SimpleServer.Core.GamePlay
         {
             try
             {
-                string response = await _client.ReadMessage();
+                string response = await SClient.ReadMessage();
 
                 return response;
             }

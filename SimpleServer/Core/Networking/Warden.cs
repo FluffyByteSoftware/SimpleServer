@@ -2,6 +2,7 @@
 using FluffyByte.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
+using FluffyByte.SimpleServer.Core.Networking;
 
 namespace SimpleServer.Core.Networking
 {
@@ -39,6 +40,12 @@ namespace SimpleServer.Core.Networking
         public static async Task OnAuthorized(SimpleClient client)
         {
             await client.SendMessage("Access granted.");
+            await client.SendMessage("Type /help for available commands.");
+        }
+
+        public static async Task OnAuthorized(SocketClient client)
+        {
+            await client.SendMessage("Access Granted.");
             await client.SendMessage("Type /help for available commands.");
         }
 
